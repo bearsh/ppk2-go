@@ -18,10 +18,10 @@ var (
 )
 
 var (
-	port       = flag.StringP("port", "p", "", "Serial port")
+	port       = flag.StringP("port", "p", "", "Serial `port`")
 	list       = flag.BoolP("list", "l", false, "List PPK2 devices")
-	voltage    = flag.Uint("voltage", 0, "Voltage to source or expected voltage in ampere meter mode")
-	sampleTime = flag.Float32P("sample-time", "s", 0.1, "Sample time")
+	voltage    = flag.Uint("voltage", 0, "Voltage (in `mV`) to source or expected voltage in ampere meter mode")
+	sampleTime = flag.Float32P("sample-time", "s", 0.1, "Sample time in `seconds`")
 )
 
 func init() {
