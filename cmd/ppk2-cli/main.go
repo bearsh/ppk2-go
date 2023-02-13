@@ -28,10 +28,9 @@ func init() {
 
 	flag.ErrHelp = errors.New("help requested")
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage of %s:\n", AppName)
+		fmt.Fprintf(os.Stderr, "Usage: %s [OPTION]\n", AppName)
 		flag.PrintDefaults()
 	}
-	flag.CommandLine.MarkHidden("dev")
 }
 
 func main() {
