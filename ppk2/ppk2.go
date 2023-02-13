@@ -276,7 +276,7 @@ func (p *PPK2) UseSourceMeter() error {
 
 // GetRawData return all data in the serial buffer
 func (p *PPK2) GetRawData() ([]byte, error) {
-	b := make([]byte, 1000)
+	b := make([]byte, 2048)
 	n, err := p.port.Read(b)
 	return b[:n], err
 }
