@@ -46,10 +46,14 @@ func main() {
 		os.Exit(0)
 	}
 
-	if *port == "" && len(devs) > 0 {
-		*port = devs[0]
-	} else {
-		fmt.Fprintf(os.Stderr, "no port give and no connected devices found\n")
+	if *port == "" {
+		if len(devs) > 0 {
+			*port = devs[0]
+		} else {
+			fmt.Fprintf(os.Stderr, "no port give and no connected devices found\n")
+			os.Exit(-1)
+		}
+	}
 		os.Exit(-1)
 	}
 
