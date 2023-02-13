@@ -23,6 +23,7 @@ var (
 	port       = flag.StringP("port", "p", "", "Serial `port`")
 	list       = flag.BoolP("list", "l", false, "List PPK2 devices")
 	voltage    = flag.Uint("voltage", 0, "Voltage (in `mV`) to source or expected voltage in ampere meter mode")
+	source     = flag.Bool("source", false, "Source the target, needs voltage to be specified")
 	sampleTime = flag.Float32P("sample-time", "s", 0.1, "Sample time in `seconds`")
 )
 
@@ -56,6 +57,9 @@ func main() {
 			os.Exit(-1)
 		}
 	}
+
+	if *source && *voltage == 0 {
+		fmt.Fprintf(os.Stderr, "source to the target requested but no voltage specified\n")
 		os.Exit(-1)
 	}
 
@@ -71,10 +75,17 @@ func main() {
 	}
 
 	p.GetModifiers()
-	p.UseAmpereMeter()
+
+	if *source {
+		p.UseSourceMeter()
+	} else {
+		p.UseAmpereMeter()
+	}
+
 	if *voltage != 0 {
 		p.SetSourceVoltage(*voltage)
 	}
+
 	p.ToggleDUTPower(true)
 
 	d := p.StartReader()
