@@ -421,17 +421,21 @@ func (p *PPK2) GetModifiers() error {
 }
 
 func (p *PPK2) GetSamples(buf []byte) Samples {
-	sample_size := 4 // one analog value is 4 bytes in size
+	const sample_size = 4 // one analog value is 4 bytes in size
 	offset := len(p.remainder)
 	samples := make(Samples, 0, len(buf)/sample_size+2)
 	var v uint32
 
 	p.remainder = append(p.remainder, buf[0:sample_size-offset]...)
+	if len(p.remainder) < sample_size {
+		return samples
+	}
+
 	v, _ = newBytesReader(p.remainder).ReadUint32()
 	a, l, c := p.handleRawData(v)
 	samples = append(samples, Sample{Adc: a, Logic: l, Cnt: c})
 
-	r := newBytesReader(buf[sample_size-offset:])
+	r := newBytesReader(buf[min(len(buf), sample_size-offset):])
 
 	for r.Len() >= sample_size {
 		v, _ = r.ReadUint32()
