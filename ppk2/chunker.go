@@ -19,6 +19,8 @@ func NewChunker(nb uint, c <-chan Samples) *Chunk {
 }
 
 func (d *Chunk) chunker() {
+	defer close(d.C)
+
 	buf := make(Samples, d.nb)
 	cnt := 0
 
