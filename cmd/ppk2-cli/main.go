@@ -70,12 +70,11 @@ func main() {
 	}
 	p.ToggleDUTPower(true)
 
-	startTime := time.Now()
-
 	d := p.StartReader()
 	ds := ppk2.NewChunker(chunkSize, d)
 
 	f := func() {
+		startTime := time.Now()
 		for i := range ds.C {
 			fmt.Printf("v:%v;%v;%v\n", time.Since(startTime), i.Average(), len(i))
 		}
