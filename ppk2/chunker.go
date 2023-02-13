@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-2.0
+
 package ppk2
 
 type Chunk struct {
