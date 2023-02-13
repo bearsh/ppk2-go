@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/bearsh/ppk2-go/ppk2"
@@ -73,11 +74,17 @@ func main() {
 	d := p.StartReader()
 	ds := ppk2.NewChunker(chunkSize, d)
 
+	wg := sync.WaitGroup{}
+
 	f := func() {
+		defer wg.Done()
+		wg.Add(1)
+
 		startTime := time.Now()
 		for i := range ds.C {
 			fmt.Printf("v:%v;%v;%v\n", time.Since(startTime), i.Average(), len(i))
 		}
+		fmt.Printf("\n")
 	}
 	go f()
 
@@ -87,4 +94,6 @@ func main() {
 
 	p.StopReader()
 	p.ToggleDUTPower(false)
+
+	wg.Wait()
 }
