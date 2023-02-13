@@ -194,6 +194,7 @@ func NewPPK2(port string, opts ...Option) (*PPK2, error) {
 	if err != nil {
 		return nil, err
 	}
+	sp.SetReadTimeout(time.Millisecond)
 
 	p := &PPK2{
 		mods: modifiers{
