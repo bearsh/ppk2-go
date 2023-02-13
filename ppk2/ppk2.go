@@ -423,6 +423,11 @@ func (p *PPK2) GetModifiers() error {
 	return nil
 }
 
+// GetRollingAverage return two average value, filtered differently
+func (p *PPK2) GetRollingAverage() (float64, float64) {
+	return p.rollingAvg, p.rollingAvg4
+}
+
 // GetSamples returns the samples converted from the raw values in the provided buffer
 func (p *PPK2) GetSamples(buf []byte) Samples {
 	const sample_size = 4 // one analog value is 4 bytes in size
