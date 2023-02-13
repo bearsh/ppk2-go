@@ -175,8 +175,10 @@ type PPK2 struct {
 	hw                      uint
 	calibrated              bool
 
-	readerStop chan struct{}
-	readerData chan Samples
+	running       bool
+	portData      chan []byte
+	readerStopped chan struct{}
+	readerData    chan Samples
 }
 
 type Option func(*PPK2)
@@ -210,8 +212,6 @@ func NewPPK2(port string, opts ...Option) (*PPK2, error) {
 		spikeFilterSamples: 3,
 		prevRange:          math.MaxInt8,
 		port:               sp,
-
-		readerStop: make(chan struct{}, 1),
 	}
 
 	for _, opt := range opts {
@@ -451,6 +451,8 @@ func (p *PPK2) GetSamples(buf []byte) Samples {
 
 func (p *PPK2) StartReader() chan Samples {
 	p.readerData = make(chan Samples, 10000)
+	p.portData = make(chan []byte, 10)
+	p.readerStopped = make(chan struct{})
 
 	p.StartMeasuring()
 	go p.reader()
@@ -459,29 +461,37 @@ func (p *PPK2) StartReader() chan Samples {
 }
 
 func (p *PPK2) StopReader() {
-	//fmt.Printf("StopReader...\n")
 	p.StopMeasuring()
-	//fmt.Printf("StopReader2...\n")
-	p.readerStop <- struct{}{}
-	//fmt.Printf("stop...\n")
-	<-p.readerStop
-	//fmt.Printf("...stopped\n")
+	p.running = false
+	<-p.readerStopped
 }
 
 func (p *PPK2) reader() {
-	defer close(p.readerData)
+	defer close(p.portData)
 
-	t := time.NewTicker(time.Millisecond)
-	for {
-		select {
-		case <-t.C:
-			d, _ := p.GetRawData()
-			s := p.GetSamples(d)
-			p.readerData <- s
-		case <-p.readerStop:
-			p.readerStop <- struct{}{}
-			return
+	p.running = true
+	go p.converter()
+
+	for p.running {
+		d, _ := p.GetRawData()
+		if len(d) > 0 {
+			p.portData <- d
 		}
+	}
+}
+
+func (p *PPK2) converter() {
+	defer func() {
+		close(p.readerData)
+		close(p.readerStopped)
+	}()
+
+	for {
+		d := <-p.portData
+		if len(d) == 0 {
+			break
+		}
+		p.readerData <- p.GetSamples(d)
 	}
 }
 
