@@ -423,6 +423,7 @@ func (p *PPK2) GetModifiers() error {
 	return nil
 }
 
+// GetSamples returns the samples converted from the raw values in the provided buffer
 func (p *PPK2) GetSamples(buf []byte) Samples {
 	const sample_size = 4 // one analog value is 4 bytes in size
 	offset := len(p.remainder)
@@ -452,6 +453,7 @@ func (p *PPK2) GetSamples(buf []byte) Samples {
 	return samples
 }
 
+// StartReader starts the reader and returns a channel which will provide the samples
 func (p *PPK2) StartReader() chan Samples {
 	p.readerData = make(chan Samples, 10000)
 	p.portData = make(chan []byte, 10)
@@ -463,6 +465,7 @@ func (p *PPK2) StartReader() chan Samples {
 	return p.readerData
 }
 
+// StopReader stops the reader and closes the channel
 func (p *PPK2) StopReader() {
 	p.StopMeasuring()
 	p.running = false
@@ -513,7 +516,7 @@ func (p *PPK2) handleRawData(adc_value uint32) (float64, uint8, uint8) {
 	return analog_value, bits, cnt
 }
 
-// """Get result of adc conversion"""
+// getAdcResult converts the adc raw value and calculated a rolling average
 func (p *PPK2) getAdcResult(current_range uint8, adc_value uint32) float64 {
 	result_without_gain := (float64(adc_value) - p.mods.O[current_range]) * (AdcMult / p.mods.R[current_range])
 	adc := p.mods.UG[current_range] * (result_without_gain*(p.mods.GS[current_range]*result_without_gain+p.mods.GI[current_range]) + (p.mods.S[current_range]*(float64(p.currentVdd)/1000) + p.mods.I[current_range]))
