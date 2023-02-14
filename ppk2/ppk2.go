@@ -51,8 +51,8 @@ const (
 
 // PPK2 measurement modes
 const (
-	AmpereMode = iota
-	SourceMode = iota
+	AmpereMode = 1
+	SourceMode = 2
 )
 
 const (
