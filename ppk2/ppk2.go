@@ -64,20 +64,20 @@ const (
 	AdcMult = 1.8 / 163840
 )
 
-type mask struct {
+type Mask struct {
 	Msk uint32
 	Pos uint32
 }
 
-func (m mask) getMaskValue(i uint32) uint32 {
+func (m Mask) GetMaskValue(i uint32) uint32 {
 	return (i & m.Msk) >> m.Pos
 }
 
 var ( //             32bit: 0b00000000000000000000000000000000
-	MeasAdc     = mask{Msk: 0b00000000000000000011111111111111, Pos: 0}  // 14bits, pos 0
-	MeasRange   = mask{Msk: 0b00000000000000011100000000000000, Pos: 14} // 3bits, pos 14
-	MeasCounter = mask{Msk: 0b00000000111111000000000000000000, Pos: 18} // 6bits, pos 18
-	MeasLogic   = mask{Msk: 0b11111111000000000000000000000000, Pos: 24} // 8bits, pos 24
+	MeasAdc     = Mask{Msk: 0b00000000000000000011111111111111, Pos: 0}  // 14bits, pos 0
+	MeasRange   = Mask{Msk: 0b00000000000000011100000000000000, Pos: 14} // 3bits, pos 14
+	MeasCounter = Mask{Msk: 0b00000000111111000000000000000000, Pos: 18} // 6bits, pos 18
+	MeasLogic   = Mask{Msk: 0b11111111000000000000000000000000, Pos: 24} // 8bits, pos 24
 )
 
 type modifiers struct {
@@ -513,10 +513,10 @@ func (p *PPK2) writeSerial(cmd ...byte) error {
 
 // handleRawData converts the raw value to a analog value
 func (p *PPK2) handleRawData(adc_value uint32) (float64, uint8, uint8) {
-	current_measurement_range := uint8(min(MeasRange.getMaskValue(adc_value), 4))
-	adc_result := MeasAdc.getMaskValue(adc_value) * 4
-	bits := uint8(MeasLogic.getMaskValue(adc_value))
-	cnt := uint8(MeasCounter.getMaskValue(adc_value))
+	current_measurement_range := uint8(min(MeasRange.GetMaskValue(adc_value), 4))
+	adc_result := MeasAdc.GetMaskValue(adc_value) * 4
+	bits := uint8(MeasLogic.GetMaskValue(adc_value))
+	cnt := uint8(MeasCounter.GetMaskValue(adc_value))
 	analog_value := p.getAdcResult(current_measurement_range, adc_result) * math.Pow(10, 6)
 	return analog_value, bits, cnt
 }
