@@ -405,7 +405,7 @@ func (p *PPK2) GetModifiers() error {
 
 // GetRollingAverage return two average value, filtered differently
 func (p *PPK2) GetRollingAverage() (float64, float64) {
-	return p.rollingAvg, p.rollingAvg4
+	return p.rollingAvg * math.Pow(10, 6), p.rollingAvg4 * math.Pow(10, 6)
 }
 
 // GetSamples returns the samples converted from the raw values in the provided buffer
