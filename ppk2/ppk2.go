@@ -235,12 +235,12 @@ func (p *PPK2) StartMeasuring() error {
 		}
 	}
 
-	return p.writeSerial(AverageStart)
+	return p.WriteCmd(AverageStart)
 }
 
 // StopMeasuring stops the continuous measurement
 func (p *PPK2) StopMeasuring() error {
-	return p.writeSerial(AverageStop)
+	return p.WriteCmd(AverageStop)
 }
 
 // SetSourceVoltage inits device - based on observation only REGULATOR_SET is the command.
@@ -249,7 +249,7 @@ func (p *PPK2) StopMeasuring() error {
 // 800mV is the lowest setting - [3,32] - the values then increase linearly
 func (p *PPK2) SetSourceVoltage(mV uint) error {
 	b_1, b_2 := convertSourceVoltage(mV)
-	if err := p.writeSerial(RegulatorSet, b_1, b_2); err != nil {
+	if err := p.WriteCmd(RegulatorSet, b_1, b_2); err != nil {
 		return err
 	}
 	p.currentVdd = mV
@@ -259,22 +259,22 @@ func (p *PPK2) SetSourceVoltage(mV uint) error {
 // ToggleDUTPower toggles DUT power based on parameter
 func (p *PPK2) ToggleDUTPower(state bool) error {
 	if state {
-		return p.writeSerial(DeviceRunningSet, TriggerSet)
+		return p.WriteCmd(DeviceRunningSet, TriggerSet)
 	} else {
-		return p.writeSerial(DeviceRunningSet, NoOp)
+		return p.WriteCmd(DeviceRunningSet, NoOp)
 	}
 }
 
 // UseAmpereMeter configures the device to use ampere meter
 func (p *PPK2) UseAmpereMeter() error {
 	p.mode = AmpereMode
-	return p.writeSerial(SetPowerMode, TriggerSet)
+	return p.WriteCmd(SetPowerMode, TriggerSet)
 }
 
 // UseSourceMeter configures the device to use source meter
 func (p *PPK2) UseSourceMeter() error {
 	p.mode = SourceMode
-	return p.writeSerial(SetPowerMode, AvgNumSet)
+	return p.WriteCmd(SetPowerMode, AvgNumSet)
 }
 
 // GetRawData return all data in the serial buffer
@@ -286,7 +286,7 @@ func (p *PPK2) GetRawData() ([]byte, error) {
 
 // GetModifiers gets modifiers from device memory
 func (p *PPK2) GetModifiers() error {
-	if err := p.writeSerial(GetMetaData); err != nil {
+	if err := p.WriteCmd(GetMetaData); err != nil {
 		return err
 	}
 
@@ -506,7 +506,8 @@ func (p *PPK2) converter() {
 	}
 }
 
-func (p *PPK2) writeSerial(cmd ...byte) error {
+// WriteCmd writes a command with optional data
+func (p *PPK2) WriteCmd(cmd ...byte) error {
 	_, err := p.port.Write(cmd)
 	return err
 }
