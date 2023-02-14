@@ -390,7 +390,7 @@ func (p *PPK2) GetSamples(buf []byte) Samples {
 	samples := make(Samples, 0, len(buf)/sample_size+2)
 	var v uint32
 
-	p.remainder = append(p.remainder, buf[0:sample_size-offset]...)
+	p.remainder = append(p.remainder, buf[0:min(sample_size-offset, len(buf))]...)
 	if len(p.remainder) < sample_size {
 		return samples
 	}
