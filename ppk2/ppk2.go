@@ -97,6 +97,13 @@ func min[T constraints.Ordered](a, b T) T {
 	return b
 }
 
+func max[T constraints.Ordered](a, b T) T {
+	if a > b {
+		return a
+	}
+	return b
+}
+
 type Sample struct {
 	Adc   float64
 	Logic uint8
@@ -106,11 +113,29 @@ type Sample struct {
 type Samples []Sample
 
 func (s Samples) Average() float64 {
+	if len(s) == 0 {
+		return 0
+	}
+
 	var res float64
 	for i := range s {
 		res += s[i].Adc
 	}
 	return res / float64(len(s))
+}
+
+func (s Samples) MinMax() (float64, float64) {
+	if len(s) == 0 {
+		return 0, 0
+	}
+
+	mi := s[0].Adc
+	ma := s[0].Adc
+	for i := range s[1:] {
+		mi = min(s[i].Adc, mi)
+		ma = max(s[i].Adc, ma)
+	}
+	return mi, ma
 }
 
 type PPK2 struct {
