@@ -17,7 +17,7 @@ import (
 
 var (
 	AppName string
-	Version string = "unknown"
+	Version string
 )
 
 var (
@@ -31,6 +31,9 @@ var (
 
 func init() {
 	_, AppName = filepath.Split(os.Args[0])
+	if Version == "" {
+		Version = "unknown"
+	}
 
 	flag.ErrHelp = errors.New("help requested")
 	flag.Usage = func() {
