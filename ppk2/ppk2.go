@@ -497,7 +497,7 @@ func (p *PPK2) WriteCmd(cmd ...byte) error {
 
 // handleRawData converts the raw value to a analog value
 func (p *PPK2) handleRawData(adc_value uint32) (float64, uint8, uint8) {
-	current_measurement_range := uint8(min(MeasRange.GetMaskValue(adc_value), 4))
+	current_measurement_range := uint8(min(MeasRange.GetMaskValue(adc_value), uint32(len(p.mods.R)-1)))
 	adc_result := MeasAdc.GetMaskValue(adc_value) * 4
 	bits := uint8(MeasLogic.GetMaskValue(adc_value))
 	cnt := uint8(MeasCounter.GetMaskValue(adc_value))
