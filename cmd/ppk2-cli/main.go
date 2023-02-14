@@ -3,6 +3,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -26,6 +27,7 @@ var (
 	voltage    = flag.Uint("voltage", 0, "Voltage (in `mV`) to source or expected voltage in ampere meter mode")
 	source     = flag.Bool("source", false, "Source the target, needs voltage to be specified")
 	sampleTime = flag.Float32P("sample-time", "s", 0.1, "Sample time in `seconds`")
+	runTime    = flag.Float32("time", 0, "The application quits after the given number of `seconds`")
 	version    = flag.Bool("version", false, "Display the version and exit")
 )
 
@@ -115,9 +117,17 @@ func main() {
 	}
 	go f()
 
-	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, os.Interrupt)
-	<-ch
+	ctx, stop := context.WithCancel(context.Background())
+
+	if *runTime > 0 {
+		time.AfterFunc(time.Duration(*runTime*float32(time.Second)), func() {
+			stop()
+		})
+	}
+
+	ctx, _ = signal.NotifyContext(ctx, os.Interrupt)
+	<-ctx.Done()
+	stop()
 
 	p.StopReader()
 	p.ToggleDUTPower(false)
