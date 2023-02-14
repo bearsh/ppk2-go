@@ -1,3 +1,6 @@
+[![Go Reference](https://pkg.go.dev/badge/github.com/bearsh/ppk2-go.svg)](https://pkg.go.dev/github.com/bearsh/ppk2-go)
+[![License](https://img.shields.io/github/license/bearsh/ppk2-go)](LICENSE.md)
+
 # ppk2-go
 
 This projects provides a golang API and a command line tool to access the Nordic
