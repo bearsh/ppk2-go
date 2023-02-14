@@ -88,6 +88,7 @@ type modifiers struct {
 	S  [5]float64
 	I  [5]float64
 	UG [5]float64
+	IA int
 }
 
 func min[T constraints.Ordered](a, b T) T {
@@ -416,7 +417,9 @@ func (p *PPK2) GetModifiers() error {
 		case "UG4": //  1.00
 			parseFloat(val, &p.mods.UG[4])
 		case "IA": //  57
-			// ??
+			if i, err := strconv.Atoi(val); err == nil {
+				p.mods.IA = i
+			}
 		}
 	}
 
