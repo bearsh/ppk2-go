@@ -1,4 +1,12 @@
 // SPDX-License-Identifier: GPL-2.0
+//
+// This python API is written for use with the Nordic Semiconductor's Power
+// Profiler Kit II (PPK 2).
+//
+// The PPK2 uses Serial communication. The unofficial ppk2-api-python
+// (https://github.com/IRNAS/ppk2-api-python) and the official nRF Connect Power
+// Profiler (https://github.com/NordicSemiconductor/pc-nrfconnect-ppk) was used
+// as a reference
 
 package ppk2
 
@@ -13,10 +21,6 @@ import (
 	"go.bug.st/serial"
 	"golang.org/x/exp/constraints"
 )
-
-// This python API is written for use with the Nordic Semiconductor's Power Profiler Kit II (PPK 2).
-// The PPK2 uses Serial communication.
-// The official nRF Connect Power Profiler was used as a reference: https://github.com/NordicSemiconductor/pc-nrfconnect-ppk
 
 const (
 	NoOp               = 0x00
