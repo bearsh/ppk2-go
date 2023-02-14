@@ -17,6 +17,7 @@ import (
 
 var (
 	AppName string
+	Version string = "unknown"
 )
 
 var (
@@ -25,6 +26,7 @@ var (
 	voltage    = flag.Uint("voltage", 0, "Voltage (in `mV`) to source or expected voltage in ampere meter mode")
 	source     = flag.Bool("source", false, "Source the target, needs voltage to be specified")
 	sampleTime = flag.Float32P("sample-time", "s", 0.1, "Sample time in `seconds`")
+	version    = flag.Bool("version", false, "Display the version and exit")
 )
 
 func init() {
@@ -39,6 +41,11 @@ func init() {
 
 func main() {
 	flag.Parse()
+
+	if *version {
+		fmt.Printf("%s\n", Version)
+		os.Exit(0)
+	}
 
 	devs := ppk2.ListDevices()
 
