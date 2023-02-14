@@ -457,7 +457,10 @@ func (p *PPK2) converter() {
 		if len(d) == 0 {
 			break
 		}
-		p.readerData <- p.GetSamples(d)
+		s := p.GetSamples(d)
+		if len(s) > 0 {
+			p.readerData <- s
+		}
 	}
 }
 
