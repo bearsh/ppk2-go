@@ -26,4 +26,5 @@ jobs:
         goos: ${{ matrix.goos }}
         goarch: ${{ matrix.goarch }}
         project_path: "./cmd/ppk2-cli"
+        binary_name: "ppk2-cli"
         ldflags: "-s -w -X main.Version=${{ github.ref_name }}"
