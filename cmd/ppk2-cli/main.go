@@ -22,7 +22,8 @@ var (
 )
 
 var (
-	port       = flag.StringP("port", "p", "", "Serial `port`")
+	port       = flag.StringP("port", "p", "", "Serial `port` of device")
+	sn         = flag.String("sn", "", "Serial number (`sn`) of device")
 	list       = flag.BoolP("list", "l", false, "List PPK2 devices")
 	voltage    = flag.Uint("voltage", 0, "Voltage (in `mV`) to source or expected voltage in ampere meter mode")
 	source     = flag.Bool("source", false, "Source the target, needs voltage to be specified")
@@ -56,18 +57,26 @@ func main() {
 
 	if *list {
 		for _, i := range devs {
-			fmt.Printf("- %s\n", i)
+			fmt.Printf("- Port: %s, SN: %s\n", i.Name, i.SerialNumber)
 		}
 		os.Exit(0)
 	}
 
-	if *port == "" {
+	if *port == "" && *sn == "" {
 		if len(devs) > 0 {
-			*port = devs[0]
-		} else {
-			fmt.Fprintf(os.Stderr, "no port give and no connected devices found\n")
-			os.Exit(-1)
+			*port = devs[0].Name
 		}
+	} else if *sn != "" {
+		for _, i := range devs {
+			if i.SerialNumber == *sn {
+				*port = i.Name
+				break
+			}
+		}
+	}
+	if *port == "" {
+		fmt.Fprintf(os.Stderr, "no port or serial number give and no connected devices found\n")
+		os.Exit(-1)
 	}
 
 	if *source && *voltage == 0 {
