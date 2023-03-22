@@ -27,8 +27,8 @@ func readLine(filename string) (string, error) {
 	return string(line), err
 }
 
-func ListDevices() []string {
-	l := []string{}
+func ListDevices() []*enumerator.PortDetails {
+	l := []*enumerator.PortDetails{}
 
 	ports, err := enumerator.GetDetailedPortsList()
 	if err != nil {
@@ -41,7 +41,7 @@ func ListDevices() []string {
 		}
 
 		if strings.HasPrefix(p.Product, "nRF Connect USB CDC ACM") || strings.Contains(p.Product, "PPK2") {
-			l = append(l, p.Name)
+			l = append(l, p)
 			continue
 		}
 		if runtime.GOOS == "linux" {
@@ -51,7 +51,7 @@ func ListDevices() []string {
 			usbDevPath := filepath.Dir(realDevicePath)
 
 			if product, err := readLine(filepath.Join(usbDevPath, "product")); err == nil && product == "PPK2" {
-				l = append(l, p.Name)
+				l = append(l, p)
 				continue
 			}
 		}
