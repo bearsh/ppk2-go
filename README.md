@@ -9,6 +9,15 @@ Power Profile Kit 2. The code is heavily based on the the
 
 ## CLI
 
+### Installation
+
+If go is installed, simply type
+```
+go install github.com/bearsh/ppk2-go/cmd/ppk2-cli@latest
+```
+
+### Usage
+
 ```
 Usage: ppk2-cli [OPTION]
   -l, --list                  List PPK2 devices
