@@ -1,14 +1,12 @@
 module github.com/bearsh/ppk2-go
 
-go 1.19
+go 1.26.0
 
 require (
-	github.com/spf13/pflag v1.0.5
-	go.bug.st/serial v1.5.0
-	golang.org/x/exp v0.0.0-20230203172020-98cc5a0785f9
+	github.com/earthboundkid/versioninfo/v2 v2.24.1
+	github.com/spf13/pflag v1.1.0
+	go.bug.st/serial v1.8.0
+	golang.org/x/exp v0.0.0-20261109185158-a52e3aef5920
 )
 
-require (
-	github.com/creack/goselect v0.1.2 // indirect
-	golang.org/x/sys v0.1.0 // indirect
-)
+require golang.org/x/sys v0.50.0 // indirect

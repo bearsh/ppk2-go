@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/bearsh/ppk2-go/ppk2"
+	"github.com/earthboundkid/versioninfo/v2"
 	flag "github.com/spf13/pflag"
 )
 
@@ -35,7 +36,7 @@ var (
 func init() {
 	_, AppName = filepath.Split(os.Args[0])
 	if Version == "" {
-		Version = "unknown"
+		Version = versioninfo.Version
 	}
 
 	flag.ErrHelp = errors.New("help requested")
